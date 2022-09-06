@@ -1,13 +1,15 @@
 using DG.Tweening;
 using Prototype.Scripts.Grid;
+using Prototype.Scripts.InputActions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Prototype.Scripts.Managers
 {
-    public class GameManager : MonoBehaviour
+    public class LevelManager : MonoBehaviour
     {
         //Witdh of gird.
         [SerializeField] int width = 4;
@@ -55,15 +57,55 @@ namespace Prototype.Scripts.Managers
         GameState state;
         int round;
 
+        //Getting inputs from InputSystem.
+        InputsControl inputAction;
+        SwipeDetection swipeDetection;
+
 
         //Getting  blocks value.
         BlockType GetBlockTypeByValue(int value) => types.First(t => t.value == value);
 
+        private void Awake()
+        {
+            inputAction = new InputsControl();
+            swipeDetection = SwipeDetection.Instance;
+        }
+        private void OnEnable()
+        {
+            inputAction.Enable();
+            inputAction.Keyboard.Keyboard.started += GetKeyboardInput;
+            swipeDetection.OnUpSwipe += GetMobileInput;
+            swipeDetection.OnDownSwipe += GetMobileInput;
+            swipeDetection.OnRightSwipe += GetMobileInput;
+            swipeDetection.OnLeftUpSwipe += GetMobileInput;
+
+        }
+        private void OnDisable()
+        {
+            inputAction.Disable();
+            inputAction.Keyboard.Keyboard.started -= GetKeyboardInput;
+            swipeDetection.OnUpSwipe -= GetMobileInput;
+            swipeDetection.OnDownSwipe -= GetMobileInput;
+            swipeDetection.OnRightSwipe -= GetMobileInput;
+            swipeDetection.OnLeftUpSwipe -= GetMobileInput;
+        }
         private void Start()
         {
             ChangeGameState(GameState.GenerateLevel);
         }
-
+        private void Update()
+        {
+            if (state != GameState.WaitingInput) return;
+        }
+        void GetKeyboardInput(InputAction.CallbackContext context)
+        {
+            Vector2 direction = context.ReadValue<Vector2>();
+            Shift(direction);
+        }
+        void GetMobileInput(Vector2 direction)
+        {
+            Shift(direction);
+        }
 
         /// <summary>
         /// Changing game states.
@@ -156,13 +198,13 @@ namespace Prototype.Scripts.Managers
         /// <summary>
         /// Base shifting mechanics.
         /// </summary>
-        /// <param name="dir"></param>
-        void Shift(Vector2 dir)
+        /// <param name="direction"></param>
+        void Shift(Vector2 direction)
         {
             ChangeGameState(GameState.Shifting);
 
             var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
-            if (dir == Vector2.right || dir == Vector2.up) orderedBlocks.Reverse();
+            if (direction == Vector2.right || direction == Vector2.up) orderedBlocks.Reverse();
 
             foreach (var block in orderedBlocks)
             {
@@ -171,7 +213,7 @@ namespace Prototype.Scripts.Managers
                 {
                     block.SetBlock(next);
 
-                    var possibleNode = GetNodeAtPosition(next.Pos + dir);
+                    var possibleNode = GetNodeAtPosition(next.Pos + direction);
                     if (possibleNode != null)
                     {
                         // We know a node is present
@@ -224,7 +266,7 @@ namespace Prototype.Scripts.Managers
         {
             var newValue = baseBlock.value * 2;
 
-            Instantiate(mergeEffectPrefab, baseBlock.Pos, Quaternion.identity);
+            //Instantiate(mergeEffectPrefab, baseBlock.Pos, Quaternion.identity);
             //Instantiate(floatingTextPrefab, baseBlock.Pos, Quaternion.identity).Init(newValue);
 
             SpawnBlock(baseBlock.node, newValue);
