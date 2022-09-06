@@ -4,3 +4,6 @@ Will fix:
 
 2.Sounds add up each other while merging if there is more than one merge.
 
+3.Current score will reset after new scene loaded.
+
+4.Win conditions will change according to grid layout.
