@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68aad917d0cf2754ba9f97838988580c, type: 3}
+  m_Name: SoundManager
+  m_EditorClassIdentifier: 
+  moveSound: {fileID: 8300000, guid: d46323e22e74e46baa241cbf48c85671, type: 3}
+  moveSoundVolume: 0.05
+  mergingSounds: {fileID: 8300000, guid: fe0b1f9aeb45b41b089175aeeabd5d95, type: 3}
+  mergingSoundsVolume: 0.1
+  niceScoreSound: {fileID: 8300000, guid: 2667a0a008b044e218b63df62e2be749, type: 3}
+  niceScoreSoundVolume: 0.2
+  winSound: {fileID: 8300000, guid: a0ca8964c08d54c5dbebf245bdc474ca, type: 3}
+  winSoundVolume: 0.3
+  loseSound: {fileID: 8300000, guid: 79e6baad2fd414b82a6d49ce1568d2e5, type: 3}
+  loseSoundvolume: 0.3

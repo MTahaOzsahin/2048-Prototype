@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Prototype.Scripts.Grid;
 using Prototype.Scripts.InputActions;
+using Prototype.Scripts.Managers.ScriptableObjects;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,12 @@ namespace Prototype.Scripts.Managers
 {
     public class LevelManager : MonoBehaviour
     {
+        //To invoke scoreManager.
+        [SerializeField] ScoreManager scoreManager;
+
+        //To play sounds
+        [SerializeField]SoundManager soundManager;
+
         //Witdh of gird.
         [SerializeField] int width = 4;
 
@@ -35,18 +42,13 @@ namespace Prototype.Scripts.Managers
         //The needed value to win.
         [SerializeField] int winCondition = 2048;
 
-        //To instantiate merged block.
-        [SerializeField] GameObject mergeEffectPrefab;
 
         ////To animate merged blocks value.
         ////[SerializeField] FloatingText _floatingTextPrefab;
 
 
-        ////Will adjust later.........!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //[SerializeField] GameObject _winScreen, _loseScreen, _winScreenText;
-        //[SerializeField] AudioClip[] _moveClips;
-        //[SerializeField] AudioClip[] _matchClips;
-        //[SerializeField] AudioSource _source;
+        //Simple win and lose panels.
+        [SerializeField] GameObject winScreen, loseScreen;
 
 
         //List for nodes and blocks.
@@ -93,10 +95,6 @@ namespace Prototype.Scripts.Managers
         {
             ChangeGameState(GameState.GenerateLevel);
         }
-        private void Update()
-        {
-            if (state != GameState.WaitingInput) return;
-        }
         void GetKeyboardInput(InputAction.CallbackContext context)
         {
             Vector2 direction = context.ReadValue<Vector2>();
@@ -128,8 +126,12 @@ namespace Prototype.Scripts.Managers
                 case GameState.Shifting:
                     break;
                 case GameState.Win:
+                    winScreen.SetActive(true);
+                    soundManager.WinSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
                 case GameState.Lose:
+                    loseScreen.SetActive(false);
+                    soundManager.LoseSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
                 case GameState.Pause:
                     break;
@@ -160,7 +162,8 @@ namespace Prototype.Scripts.Managers
             var board = Instantiate(boardPrefab, center, Quaternion.identity);
             board.size = new Vector2(width, height);
 
-            Camera.main.transform.position = new Vector3(center.x, center.y, -10);
+            Camera.main.transform.position = new Vector3(center.x, center.y + 1.5f, -10); // +1.5f to y-axis for better looking
+            Camera.main.orthographicSize = width;
 
             ChangeGameState(GameState.SpawningBlocks);
         }
@@ -202,6 +205,7 @@ namespace Prototype.Scripts.Managers
         void Shift(Vector2 direction)
         {
             ChangeGameState(GameState.Shifting);
+            soundManager.MoveSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
 
             var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
             if (direction == Vector2.right || direction == Vector2.up) orderedBlocks.Reverse();
@@ -224,7 +228,6 @@ namespace Prototype.Scripts.Managers
                         }
                         // Otherwise, can we move to this spot?
                         else if (possibleNode.occupiedBlock == null) next = possibleNode;
-
                         // None hit? End do while loop
                     }
 
@@ -248,13 +251,16 @@ namespace Prototype.Scripts.Managers
                 foreach (var block in mergeBlocks)
                 {
                     MergeBlocks(block.mergingBlock, block);
+                    scoreManager.HandleScore(block.value);
+                    if (block.value > 63)
+                    {
+                        soundManager.NiceScoreSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
+                    }
+                    else
+                    soundManager.MergingSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                 }
-                //if (mergeBlocks.Any()) _source.PlayOneShot(_matchClips[Random.Range(0, _matchClips.Length)], 0.2f);
                 ChangeGameState(GameState.SpawningBlocks);
             });
-
-
-            //_source.PlayOneShot(_moveClips[Random.Range(0, _moveClips.Length)], 0.2f);
         }
 
         /// <summary>
@@ -266,7 +272,6 @@ namespace Prototype.Scripts.Managers
         {
             var newValue = baseBlock.value * 2;
 
-            //Instantiate(mergeEffectPrefab, baseBlock.Pos, Quaternion.identity);
             //Instantiate(floatingTextPrefab, baseBlock.Pos, Quaternion.identity).Init(newValue);
 
             SpawnBlock(baseBlock.node, newValue);

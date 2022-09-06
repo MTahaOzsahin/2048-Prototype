@@ -1,0 +1,6 @@
+Will fix:
+
+1.Win screen always show up after getting win conditions regardless wanted to keep playing.
+
+2.Sounds add up each other while merging if there is more than one merge.
+
