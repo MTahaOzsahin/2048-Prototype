@@ -10,6 +10,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
     {
         [SerializeField] SoundManager soundManager;
         [SerializeField] ScoreManager scoreManager;
+        [SerializeField] GridManager gridManager;
         public void ExitApplication()
         {
             Application.Quit();
@@ -19,6 +20,13 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
             scoreManager.currentScore = 0;
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadSceneAsync(currentLevelIndex,LoadSceneMode.Single);
+        }
+        public void SetGridLevel(int x)
+        {
+            scoreManager.currentScore = 0;
+            int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+            gridManager.GridSelecter(x,x);
+            SceneManager.LoadSceneAsync(currentLevelIndex, LoadSceneMode.Single);
         }
     }
 }

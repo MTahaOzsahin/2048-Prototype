@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 namespace Prototype.Scripts.Managers
 {
-    public class LevelManager : MonoBehaviour
+    public class GameplayManager : MonoBehaviour
     {
         //To invoke scoreManager.
         [SerializeField] ScoreManager scoreManager;
@@ -18,11 +18,8 @@ namespace Prototype.Scripts.Managers
         //To play sounds
         [SerializeField]SoundManager soundManager;
 
-        //Witdh of gird.
-        [SerializeField] int width = 4;
-
-        //Height of grid.
-        [SerializeField] int height = 4;
+        //To select grids width and height.
+        [SerializeField]GridManager gridManager;
 
         //Node prefab. Will select manually on unity inspector.
         [SerializeField] Node nodePrefab;
@@ -59,50 +56,13 @@ namespace Prototype.Scripts.Managers
         GameState state;
         int round;
 
-        //Getting inputs from InputSystem.
-        InputsControl inputAction;
-        SwipeDetection swipeDetection;
-
-
         //Getting  blocks value.
         BlockType GetBlockTypeByValue(int value) => types.First(t => t.value == value);
 
-        private void Awake()
-        {
-            inputAction = new InputsControl();
-            swipeDetection = SwipeDetection.Instance;
-        }
-        private void OnEnable()
-        {
-            inputAction.Enable();
-            inputAction.Keyboard.Keyboard.started += GetKeyboardInput;
-            swipeDetection.OnUpSwipe += GetMobileInput;
-            swipeDetection.OnDownSwipe += GetMobileInput;
-            swipeDetection.OnRightSwipe += GetMobileInput;
-            swipeDetection.OnLeftUpSwipe += GetMobileInput;
-
-        }
-        private void OnDisable()
-        {
-            inputAction.Disable();
-            inputAction.Keyboard.Keyboard.started -= GetKeyboardInput;
-            swipeDetection.OnUpSwipe -= GetMobileInput;
-            swipeDetection.OnDownSwipe -= GetMobileInput;
-            swipeDetection.OnRightSwipe -= GetMobileInput;
-            swipeDetection.OnLeftUpSwipe -= GetMobileInput;
-        }
+       
         private void Start()
         {
             ChangeGameState(GameState.GenerateLevel);
-        }
-        void GetKeyboardInput(InputAction.CallbackContext context)
-        {
-            Vector2 direction = context.ReadValue<Vector2>();
-            Shift(direction);
-        }
-        void GetMobileInput(Vector2 direction)
-        {
-            Shift(direction);
         }
 
         /// <summary>
@@ -148,22 +108,22 @@ namespace Prototype.Scripts.Managers
             round = 0;
             nodes = new List<Node>();
             blocks = new List<Block>();
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < gridManager.gridWidth; x++)
             {
-                for (int y = 0; y < height; y++)
+                for (int y = 0; y < gridManager.gridHeight; y++)
                 {
                     var node = Instantiate(nodePrefab, new Vector2(x, y), Quaternion.identity);
                     nodes.Add(node);
                 }
             }
 
-            var center = new Vector2((float)width / 2 - 0.5f, (float)height / 2 - 0.5f); //We subtract 0.5 is because our nodes are centered on each whole vector.
+            var center = new Vector2((float)gridManager.gridWidth / 2 - 0.5f, (float)gridManager.gridHeight / 2 - 0.5f); //We subtract 0.5 is because our nodes are centered on each whole vector.
 
             var board = Instantiate(boardPrefab, center, Quaternion.identity);
-            board.size = new Vector2(width, height);
+            board.size = new Vector2(gridManager.gridWidth, gridManager.gridHeight);
 
             Camera.main.transform.position = new Vector3(center.x, center.y + 1.5f, -10); // +1.5f to y-axis for better looking
-            Camera.main.orthographicSize = width;
+            Camera.main.orthographicSize = gridManager.gridWidth;
 
             ChangeGameState(GameState.SpawningBlocks);
         }
@@ -202,12 +162,13 @@ namespace Prototype.Scripts.Managers
         /// Base shifting mechanics.
         /// </summary>
         /// <param name="direction"></param>
-        void Shift(Vector2 direction)
+        public void Shift(Vector2 direction)
         {
             ChangeGameState(GameState.Shifting);
             soundManager.MoveSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
 
             var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
+
             if (direction == Vector2.right || direction == Vector2.up) orderedBlocks.Reverse();
 
             foreach (var block in orderedBlocks)

@@ -10,6 +10,7 @@ Will fix:
 
 5.Win conditions will change according to grid layout.
 
+6.If no blocks are moving when a direction is pressed the game still spawns a new block, this should not happen.
 
 Fixed:
 
