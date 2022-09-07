@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 355955913b614d642b647995a95a7a7f, type: 3}
   m_Name: GameManager
   m_EditorClassIdentifier: 
+  soundManager: {fileID: 11400000, guid: 068bd9930346c9f428798ce5eade85a4, type: 2}
+  scoreManager: {fileID: 11400000, guid: af4749d6919bce94792e1bff605d396c, type: 2}

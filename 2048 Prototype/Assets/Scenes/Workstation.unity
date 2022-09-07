@@ -219,8 +219,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   scoreManager: {fileID: 11400000, guid: af4749d6919bce94792e1bff605d396c, type: 2}
   soundManager: {fileID: 11400000, guid: 068bd9930346c9f428798ce5eade85a4, type: 2}
-  width: 8
-  height: 8
+  width: 4
+  height: 4
   nodePrefab: {fileID: 5969399119845887537, guid: c128706ea1e005d4fb46b881370519de, type: 3}
   blockPrefab: {fileID: 1850130647606655852, guid: 19076d7a50cb0334a94d381167a39d6c, type: 3}
   boardPrefab: {fileID: 5105290399748448890, guid: 321682bb7581ee2448e1af6791bb856a, type: 3}
