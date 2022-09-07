@@ -4,7 +4,10 @@ Will fix:
 
 4.Sounds add up each other while merging if there is more than one merge.
 
-6.If no blocks are moving when a direction is pressed the game still spawns a new block, this should not happen.
+
+On Going:
+
+Added Undo Function. I have beforeShiftList and afterShiftList. As well as i can take a list that contain blocks positions in those list. Will compare list to see what change and take back that changes.
 
 Fixed:
 
@@ -13,3 +16,5 @@ Fixed:
 5.Win conditions will change according to grid layout.
 
 3.Win screen always show up after getting win conditions regardless wanted to keep playing.
+
+6.If no blocks are moving when a direction is pressed the game still spawns a new block, this should not happen.
