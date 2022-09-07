@@ -2,16 +2,14 @@ Will fix:
 
 1.will add undo function.
 
-2.LevelManager will cahnge to scriptableobject.
-
-3.Win screen always show up after getting win conditions regardless wanted to keep playing.
-
 4.Sounds add up each other while merging if there is more than one merge.
-
-5.Win conditions will change according to grid layout.
 
 6.If no blocks are moving when a direction is pressed the game still spawns a new block, this should not happen.
 
 Fixed:
 
 3.Current score will reset after new scene loaded.
+
+5.Win conditions will change according to grid layout.
+
+3.Win screen always show up after getting win conditions regardless wanted to keep playing.

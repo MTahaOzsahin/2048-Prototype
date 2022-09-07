@@ -36,14 +36,6 @@ namespace Prototype.Scripts.Managers
         //Shifting anim time.
         [SerializeField] float travelTime = 0.2f;
 
-        //The needed value to win.
-        [SerializeField] int winCondition = 2048;
-
-
-        ////To animate merged blocks value.
-        ////[SerializeField] FloatingText _floatingTextPrefab;
-
-
         //Simple win and lose panels.
         [SerializeField] GameObject winScreen, loseScreen;
 
@@ -148,7 +140,7 @@ namespace Prototype.Scripts.Managers
                 return;
             }
 
-            ChangeGameState(blocks.Any(b => b.value == winCondition) ? GameState.Win : GameState.WaitingInput);
+            ChangeGameState(blocks.Any(b => b.value == gridManager.winCondition) ? GameState.Win : GameState.WaitingInput);
         }
         void SpawnBlock(Node node, int value)
         {
