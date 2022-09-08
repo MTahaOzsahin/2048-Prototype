@@ -1,13 +1,6 @@
 Will fix:
 
-1.will add undo function.
 
-4.Sounds add up each other while merging if there is more than one merge.
-
-
-On Going:
-
-Added Undo Function. I have beforeShiftList and afterShiftList. As well as i can take a list that contain blocks positions in those list. Will compare list to see what change and take back that changes.
 
 Fixed:
 

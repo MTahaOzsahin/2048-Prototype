@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Prototype.Scripts.Grid;
 using Prototype.Scripts.InputActions;
+using Prototype.Scripts.Interfaces;
 using Prototype.Scripts.Managers.ScriptableObjects;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using UnityEngine.InputSystem;
 
 namespace Prototype.Scripts.Managers
 {
-    public class GameplayManager : MonoBehaviour
+    public class GameplayManager : MonoBehaviour , ICompareLists
     {
         //To invoke scoreManager.
         [SerializeField] ScoreManager scoreManager;
@@ -28,10 +29,8 @@ namespace Prototype.Scripts.Managers
         [SerializeField] List<BlockType> types;
 
         //List for nodes and blocks.
-        List<Node> nodes;
-        List<Block> blocks;
-
-        List<Block> beforeShiftBlocks;
+        List<Node> nodesList;
+        List<Block> blocksList;
         List<Block> afterShiftBlocks;
 
         //GameStates.
@@ -79,8 +78,6 @@ namespace Prototype.Scripts.Managers
                     loseScreen.SetActive(true);
                     soundManager.LoseSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
-                case GameState.Pause:
-                    break;
                 default:
                     break;
             }
@@ -92,16 +89,15 @@ namespace Prototype.Scripts.Managers
         void GenerateGrid()
         {
             round = 0;
-            nodes = new List<Node>();
-            beforeShiftBlocks = new List<Block>();
+            nodesList = new List<Node>();
             afterShiftBlocks = new List<Block>();
-            blocks = new List<Block>();
+            blocksList = new List<Block>();
             for (int x = 0; x < gridManager.gridWidth; x++)
             {
                 for (int y = 0; y < gridManager.gridHeight; y++)
                 {
                     var node = Instantiate(gridManager.nodePrefab, new Vector2(x, y), Quaternion.identity);
-                    nodes.Add(node);
+                    nodesList.Add(node);
                 }
             }
 
@@ -123,11 +119,12 @@ namespace Prototype.Scripts.Managers
         void SpawnBlocks(int amount)
         {
 
-            var freeNodes = nodes.Where(n => n.occupiedBlock == null).OrderBy(b => Random.value).ToList();
+            var freeNodes = nodesList.Where(n => n.occupiedBlock == null).OrderBy(b => Random.value).ToList();
 
             foreach (var node in freeNodes.Take(amount))
             {
                 SpawnBlock(node, Random.value > 0.8f ? 4 : 2);
+
             }
 
             if (freeNodes.Count() == 1)
@@ -136,28 +133,16 @@ namespace Prototype.Scripts.Managers
                 return;
             }
 
-            ChangeGameState(blocks.Any(b => b.value == gridManager.winCondition) ? GameState.Win : GameState.WaitingInput);
+            ChangeGameState(blocksList.Any(b => b.value == gridManager.winCondition) ? GameState.Win : GameState.WaitingInput);
         }
         void SpawnBlock(Node node, int value)
         {
             var block = Instantiate(gridManager.blockPrefab, node.Pos, Quaternion.identity);
             block.Init(GetBlockTypeByValue(value));
             block.SetBlock(node);
-            blocks.Add(block);
+            blocksList.Add(block);
         }
-        public void UndoFunction()
-        {
-            Debug.Log(beforeShiftBlocks.Count);
-            Debug.Log(afterShiftBlocks.Count);
-            foreach (var block in afterShiftBlocks)
-            {
-                if (!beforeShiftBlocks.Contains(block))
-                {
-                    RemoveBlock(block);
-                }
-            }
-        }
-
+ 
         /// <summary>
         /// Base shifting mechanics.
         /// </summary>
@@ -165,18 +150,14 @@ namespace Prototype.Scripts.Managers
         public void Shift(Vector2 direction)
         {
             if (Time.timeScale == 0) return;
-
             ChangeGameState(GameState.Shifting);
             soundManager.MoveSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
-            beforeShiftBlocks.Clear();
-            var orderedBlocks = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); //Before shifting blocks list.
-            List<Vector2> orderedBlockPositions = new List<Vector2>();
-            foreach (var block in orderedBlocks)
+            var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); //Before shifting blocks list.
+            List<Vector2> orderedBlockPositionsBeforeShift = new List<Vector2>();
+            foreach (var block in blocksList)
             {
-                orderedBlockPositions.Add(block.Pos);
-                beforeShiftBlocks.Add(block);
+                orderedBlockPositionsBeforeShift.Add(block.Pos);
             }
-
             if (direction == Vector2.right || direction == Vector2.up) orderedBlocks.Reverse();
 
             foreach (var block in orderedBlocks)
@@ -231,14 +212,14 @@ namespace Prototype.Scripts.Managers
 
                 ///This section is here to prevent spawning block if there is not shift via compare before blocks list and after block list.
                 afterShiftBlocks.Clear();
-                var orderedBlockAfterShift = blocks.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); // After shifting block list.
+                var orderedBlockAfterShift = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); // After shifting block list.
                 List<Vector2> orderedBlockPositionsAfterShift = new List<Vector2>();
                 foreach (var block in orderedBlockAfterShift)
                 {
                     orderedBlockPositionsAfterShift.Add(block.Pos);
                     afterShiftBlocks.Add(block);
                 }
-                if (!CompareLists(orderedBlockPositions,orderedBlockPositionsAfterShift))
+                if (!ICompareLists.CompareLists(orderedBlockPositionsBeforeShift,orderedBlockPositionsAfterShift))
                 {
                     ChangeGameState(GameState.SpawningBlocks);
                 }
@@ -254,8 +235,6 @@ namespace Prototype.Scripts.Managers
         {
             var newValue = baseBlock.value * 2;
 
-            //Instantiate(floatingTextPrefab, baseBlock.Pos, Quaternion.identity).Init(newValue);
-
             SpawnBlock(baseBlock.node, newValue);
 
             RemoveBlock(baseBlock);
@@ -268,59 +247,13 @@ namespace Prototype.Scripts.Managers
         /// <param name="block"></param>
         void RemoveBlock(Block block)
         {
-            blocks.Remove(block);
+            blocksList.Remove(block);
             Destroy(block.gameObject);
         }
 
         Node GetNodeAtPosition(Vector2 pos)
         {
-            return nodes.FirstOrDefault(n => n.Pos == pos);
-        }
-
-        public static bool CompareLists<T>(List<T> aListA, List<T> aListB)
-        {
-            if (aListA == null || aListB == null || aListA.Count != aListB.Count)
-                return false;
-            if (aListA.Count == 0)
-                return true;
-            Dictionary<T, int> lookUp = new Dictionary<T, int>();
-            // create index for the first list
-            for (int i = 0; i < aListA.Count; i++)
-            {
-                int count = 0;
-                if (!lookUp.TryGetValue(aListA[i], out count))
-                {
-                    lookUp.Add(aListA[i], 1);
-                    continue;
-                }
-                lookUp[aListA[i]] = count + 1;
-            }
-            for (int i = 0; i < aListB.Count; i++)
-            {
-                int count = 0;
-                if (!lookUp.TryGetValue(aListB[i], out count))
-                {
-                    // early exit as the current value in B doesn't exist in the lookUp (and not in ListA)
-                    return false;
-                }
-                count--;
-                if (count <= 0)
-                    lookUp.Remove(aListB[i]);
-                else
-                    lookUp[aListB[i]] = count;
-            }
-            // if there are remaining elements in the lookUp, that means ListA contains elements that do not exist in ListB
-            return lookUp.Count == 0;
-
-            /// <summary>
-            /// Example how to use.
-            /// </summary>
-            //List<int> A = new List<int>(new int[] { 1, 5, 6, 7, 3, 1 });
-            //List<int> B = new List<int>(new int[] { 6, 3, 5, 1, 1, 7 });
-            //if (CompareLists(A, B))
-            //    Debug.Log("Equal");
-            //else
-            //    Debug.Log("Not equal");
+            return nodesList.FirstOrDefault(n => n.Pos == pos);
         }
     }
 
@@ -335,7 +268,6 @@ namespace Prototype.Scripts.Managers
         Shifting,
         Win,
         Lose,
-        Pause
     }
     /// <summary>
     /// Blocks types which hold their values and colors.

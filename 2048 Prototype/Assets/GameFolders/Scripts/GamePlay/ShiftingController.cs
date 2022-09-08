@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 
 namespace Prototype.Scripts.GamePlay
 {
-    public class Shifting : MonoBehaviour
+    public class ShiftingController : MonoBehaviour
     {
         //Getting inputs from InputSystem.
         InputsControl inputAction;
