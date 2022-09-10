@@ -239,18 +239,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4515014561424331391, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
+    - target: {fileID: 8552190980127346025, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1411459923}
-    - target: {fileID: 4515014561424331391, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UndoFunction
-      objectReference: {fileID: 0}
-    - target: {fileID: 4515014561424331391, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Prototype.Scripts.Managers.GameplayManager, Assembly-CSharp
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
 --- !u!1001 &5908626793845358641

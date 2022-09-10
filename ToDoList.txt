@@ -2,7 +2,14 @@ Will fix:
 
 
 
+3.Scaleable canvases for any phone.
+
+
 Fixed:
+
+1. Will check if there any mergicable block before decided to lose game.
+
+2.Undo function.
 
 3.Current score will reset after new scene loaded.
 

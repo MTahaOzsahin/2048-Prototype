@@ -32,6 +32,8 @@ namespace Prototype.Scripts.Managers
         List<Node> nodesList;
         List<Block> blocksList;
         List<Block> afterShiftBlocks;
+        List<Vector2> occupiedNodesPos;
+        List<int> occupiedNodesValue;
 
         //GameStates.
         GameState state;
@@ -91,6 +93,8 @@ namespace Prototype.Scripts.Managers
             round = 0;
             nodesList = new List<Node>();
             afterShiftBlocks = new List<Block>();
+            occupiedNodesPos = new List<Vector2>();
+            occupiedNodesValue = new List<int>();
             blocksList = new List<Block>();
             for (int x = 0; x < gridManager.gridWidth; x++)
             {
@@ -129,15 +133,36 @@ namespace Prototype.Scripts.Managers
 
             if (freeNodes.Count() == 1)
             {
-                ChangeGameState(GameState.Lose);
+                CheckLoseGame();
                 return;
             }
 
             ChangeGameState(blocksList.Any(b => b.value == gridManager.winCondition) ? GameState.Win : GameState.WaitingInput);
         }
+
+        
+
+        /// <summary>
+        /// Spawn blocks specifically for merging. 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="value"></param>
         void SpawnBlock(Node node, int value)
         {
             var block = Instantiate(gridManager.blockPrefab, node.Pos, Quaternion.identity);
+            block.Init(GetBlockTypeByValue(value));
+            block.SetBlock(node);
+            blocksList.Add(block);
+        }
+        /// <summary>
+        /// Spawn blocks specifically for undo.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="value"></param>
+        /// <param name="node"></param>
+        void SpawnBlockForUndo(Vector2 pos,int value,Node node)
+        {
+            var block = Instantiate(gridManager.blockPrefab, pos, Quaternion.identity);
             block.Init(GetBlockTypeByValue(value));
             block.SetBlock(node);
             blocksList.Add(block);
@@ -151,6 +176,16 @@ namespace Prototype.Scripts.Managers
         {
             if (Time.timeScale == 0) return;
             ChangeGameState(GameState.Shifting);
+            var occupiedNodes = nodesList.Where(n => n.occupiedBlock != null).ToList();
+            occupiedNodesPos.Clear();
+            occupiedNodesValue.Clear();
+            foreach (var node in occupiedNodes)
+            {
+                occupiedNodesPos.Add(node.Pos);
+                occupiedNodesValue.Add(node.occupiedBlock.value);
+            }
+
+
             soundManager.MoveSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
             var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); //Before shifting blocks list.
             List<Vector2> orderedBlockPositionsBeforeShift = new List<Vector2>();
@@ -227,6 +262,60 @@ namespace Prototype.Scripts.Managers
         }
 
         /// <summary>
+        /// Checking after all grid is full if there is still mergeable block.
+        /// </summary>
+        void CheckLoseGame()
+        {
+            List<Block> possibleMerges = new List<Block>();
+
+            var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
+            foreach (var block in orderedBlocks)
+            {
+                var next = block.node;
+                block.SetBlock(next);
+
+                var possibleNodeRight = GetNodeAtPosition(next.Pos + Vector2.right);
+                var possibleNodeLeft = GetNodeAtPosition(next.Pos + Vector2.left);
+                var possibleNodeUp = GetNodeAtPosition(next.Pos + Vector2.up);
+                var possibleNodeDown = GetNodeAtPosition(next.Pos + Vector2.down);
+                List<Node> possibleNodes = new List<Node>();
+                if (possibleNodeRight != null)
+                {
+                    possibleNodes.Add(possibleNodeRight);
+                }
+                if (possibleNodeLeft != null)
+                {
+                    possibleNodes.Add(possibleNodeLeft);
+                }
+                if (possibleNodeUp != null)
+                {
+                    possibleNodes.Add(possibleNodeUp);
+                }
+                if (possibleNodeDown != null)
+                {
+                    possibleNodes.Add(possibleNodeDown);
+                }
+                foreach (var possibleNode in possibleNodes)
+                {
+                    if (possibleNode.occupiedBlock.CanMerge(block.value)) //There is still mergeable blocks on grid.
+                    {
+                        possibleMerges.Add(block);
+                    }
+                }
+
+                possibleNodes.Clear();
+            }
+            if (possibleMerges.Count == 0) // All grid is full and there is not any mergeable block so it is Lose.
+            {
+                ChangeGameState(GameState.Lose);
+            }
+            else
+            {
+                possibleMerges.Clear();
+            }
+        }
+
+        /// <summary>
         /// Merging blocks that matching.
         /// </summary>
         /// <param name="baseBlock"></param>
@@ -251,9 +340,36 @@ namespace Prototype.Scripts.Managers
             Destroy(block.gameObject);
         }
 
+        /// <summary>
+        /// Getting node at given position.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         Node GetNodeAtPosition(Vector2 pos)
         {
             return nodesList.FirstOrDefault(n => n.Pos == pos);
+        }
+
+        IEnumerator UndoFunctionCoroutine()
+        {
+            var blocksInGrid = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();  // All the blocks in the grid.
+            foreach (var oldBlock in blocksInGrid)
+            {
+                RemoveBlock(oldBlock);
+            }
+            yield return new WaitForEndOfFrame();
+
+            for (int i = 0; i < occupiedNodesPos.Count; i++)
+            {
+                SpawnBlockForUndo(occupiedNodesPos[i], occupiedNodesValue[i], GetNodeAtPosition(occupiedNodesPos[i]));
+            }
+
+            yield return null; 
+        }
+        public void UndoFunction()
+        {
+            if (round == 1) return;
+            StartCoroutine(UndoFunctionCoroutine());
         }
     }
 
