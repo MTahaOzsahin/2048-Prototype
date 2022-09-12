@@ -27,6 +27,10 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         //The score to get win screen.
         public int winCondition = 1024;
 
+        //Win and lose panels.
+        public GameObject winPanel;
+        public GameObject losePanel;
+
 
 
         private void Awake()

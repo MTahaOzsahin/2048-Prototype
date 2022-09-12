@@ -22,8 +22,8 @@ namespace Prototype.Scripts.Managers
         //To select grids width and height.
         [SerializeField]GridManager gridManager;
 
-        //Simple win and lose panels.
-        [SerializeField] GameObject winScreen, loseScreen;
+        //To save blocks on quitting game.
+        [SerializeField]OnQuitManager onQuitManager;
 
         //The values that blocks holds.
         [SerializeField] List<BlockType> types;
@@ -45,7 +45,29 @@ namespace Prototype.Scripts.Managers
        
         private void Start()
         {
-            ChangeGameState(GameState.GenerateLevel);
+            if (onQuitManager.allBlocks.Count != 0)
+            {
+                GenerateGrid();
+                round = 1;
+                for (int i = 0; i < onQuitManager.allBlocks.Count; i++)
+                {
+                    SpawnBlockForUtilization(onQuitManager.allBlocksPos[i], onQuitManager.allBlocksValue[i], GetNodeAtPosition(onQuitManager.allBlocksPos[i]));
+                    ChangeGameState(GameState.WaitingInput);
+                }
+            }
+            else
+            {
+                ChangeGameState(GameState.GenerateLevel);
+            }
+        }
+
+        private void OnApplicationQuit()
+        {
+            var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
+            foreach (Block block in orderedBlocks)
+            {
+                onQuitManager.GettingGBlocks(orderedBlocks);
+            }
         }
 
         /// <summary>
@@ -61,6 +83,7 @@ namespace Prototype.Scripts.Managers
                 case GameState.GenerateLevel:
                     Time.timeScale = 1;
                     GenerateGrid();
+                    SpawnBlocks(round++ == 0 ? 2 : 1);
                     break;
                 case GameState.SpawningBlocks:
 
@@ -72,12 +95,16 @@ namespace Prototype.Scripts.Managers
                     break;
                 case GameState.Win:
                     Time.timeScale = 0;
-                    winScreen.SetActive(true);
+                    GameObject winPanel = Instantiate(gridManager.winPanel, FindObjectOfType<UiScoreManager>().gameObject.transform.position,
+                        Quaternion.identity, FindObjectOfType<UiScoreManager>().gameObject.transform);
+                    winPanel.SetActive(true);
                     soundManager.WinSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
                 case GameState.Lose:
                     Time.timeScale = 0;
-                    loseScreen.SetActive(true);
+                    GameObject losePanel = Instantiate(gridManager.losePanel, FindObjectOfType<UiScoreManager>().gameObject.transform.position,
+                        Quaternion.identity, FindObjectOfType<UiScoreManager>().gameObject.transform);
+                    losePanel.SetActive(true);
                     soundManager.LoseSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
                 default:
@@ -104,6 +131,18 @@ namespace Prototype.Scripts.Managers
                     nodesList.Add(node);
                 }
             }
+            if (gridManager.gridWidth == 4)
+            {
+                gridManager.winCondition = 1024;
+            }
+            else if (gridManager.gridWidth == 5)
+            {
+                gridManager.winCondition = 2048;
+            }
+            else
+            {
+                gridManager.winCondition = 4096;
+            }
 
             var center = new Vector2((float)gridManager.gridWidth / 2 - 0.5f, (float)gridManager.gridHeight / 2 - 0.5f); //We subtract 0.5 is because our nodes are centered on each whole vector.
 
@@ -112,8 +151,6 @@ namespace Prototype.Scripts.Managers
 
             Camera.main.transform.position = new Vector3(center.x, center.y + 1.5f, -10); // +1.5f to y-axis for better looking
             Camera.main.orthographicSize = gridManager.gridWidth;
-
-            ChangeGameState(GameState.SpawningBlocks);
         }
 
         /// <summary>
@@ -160,7 +197,7 @@ namespace Prototype.Scripts.Managers
         /// <param name="pos"></param>
         /// <param name="value"></param>
         /// <param name="node"></param>
-        void SpawnBlockForUndo(Vector2 pos,int value,Node node)
+        void SpawnBlockForUtilization(Vector2 pos,int value,Node node)
         {
             var block = Instantiate(gridManager.blockPrefab, pos, Quaternion.identity);
             block.Init(GetBlockTypeByValue(value));
@@ -361,7 +398,7 @@ namespace Prototype.Scripts.Managers
 
             for (int i = 0; i < occupiedNodesPos.Count; i++)
             {
-                SpawnBlockForUndo(occupiedNodesPos[i], occupiedNodesValue[i], GetNodeAtPosition(occupiedNodesPos[i]));
+                SpawnBlockForUtilization(occupiedNodesPos[i], occupiedNodesValue[i], GetNodeAtPosition(occupiedNodesPos[i]));
             }
 
             yield return null; 

@@ -677,9 +677,21 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 11400000, guid: 844043604673e984e80f1c1bd173d7ea, type: 2}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: WinConditionDiseabler
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 11400000, guid: 844043604673e984e80f1c1bd173d7ea, type: 2}
         m_TargetAssemblyTypeName: Prototype.Scripts.Managers.ScriptableObjects.GridManager,
           Assembly-CSharp
-        m_MethodName: WinConditionDiseabler
+        m_MethodName: TimeScaler
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -706,7 +718,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4371930061586781967
 RectTransform:
   m_ObjectHideFlags: 0

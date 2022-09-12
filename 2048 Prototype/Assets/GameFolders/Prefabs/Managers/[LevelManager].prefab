@@ -48,9 +48,7 @@ MonoBehaviour:
   scoreManager: {fileID: 11400000, guid: af4749d6919bce94792e1bff605d396c, type: 2}
   soundManager: {fileID: 11400000, guid: 068bd9930346c9f428798ce5eade85a4, type: 2}
   gridManager: {fileID: 11400000, guid: 844043604673e984e80f1c1bd173d7ea, type: 2}
-  nodePrefab: {fileID: 5969399119845887537, guid: c128706ea1e005d4fb46b881370519de, type: 3}
-  blockPrefab: {fileID: 1850130647606655852, guid: 19076d7a50cb0334a94d381167a39d6c, type: 3}
-  boardPrefab: {fileID: 5105290399748448890, guid: 321682bb7581ee2448e1af6791bb856a, type: 3}
+  onQuitManager: {fileID: 11400000, guid: b60612aa666d7c446a0a8be34d6ed34d, type: 2}
   types:
   - value: 2
     color: {r: 0.9056604, g: 0.84205943, b: 0.18284085, a: 1}
@@ -74,10 +72,8 @@ MonoBehaviour:
     color: {r: 0.09740115, g: 0.8529809, b: 0.9056604, a: 1}
   - value: 2048
     color: {r: 0.045176145, g: 0.8867924, b: 0.22702232, a: 1}
-  travelTime: 0.2
-  winCondition: 2048
-  winScreen: {fileID: 0}
-  loseScreen: {fileID: 0}
+  - value: 4096
+    color: {r: 0.7944453, g: 0.9339623, b: 0.07401203, a: 1}
 --- !u!114 &9083540172934559156
 MonoBehaviour:
   m_ObjectHideFlags: 0
