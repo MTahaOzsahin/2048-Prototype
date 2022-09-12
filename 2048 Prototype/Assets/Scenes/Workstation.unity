@@ -155,6 +155,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4515014560207171412, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4515014560207171414, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -238,6 +242,10 @@ PrefabInstance:
     - target: {fileID: 4515014560207171414, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6449727303832475178, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -199.99976
       objectReference: {fileID: 0}
     - target: {fileID: 8552190980127346025, guid: c70e5c9438f46f74a82e576a3eddebc7, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
