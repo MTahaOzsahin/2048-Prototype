@@ -13,5 +13,3 @@ MonoBehaviour:
   m_Name: OnQuitManager
   m_EditorClassIdentifier: 
   allBlocks: []
-  allBlocksPos: []
-  allBlocksValue: 

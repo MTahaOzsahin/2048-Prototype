@@ -47,11 +47,16 @@ namespace Prototype.Scripts.Managers
         {
             if (onQuitManager.allBlocks.Count != 0)
             {
+                List<Vector2> blocksPos = new List<Vector2>();
+                List<int> blockValues = new List<int>();
+                onQuitManager.GivingBlocks(blocksPos, blockValues);
+
                 GenerateGrid();
                 round = 1;
-                for (int i = 0; i < onQuitManager.allBlocks.Count; i++)
+                for (int i = 0; i < blocksPos.Count; i++)
                 {
-                    SpawnBlockForUtilization(onQuitManager.allBlocksPos[i], onQuitManager.allBlocksValue[i], GetNodeAtPosition(onQuitManager.allBlocksPos[i]));
+
+                    SpawnBlockForUtilization(blocksPos[i], blockValues[i], GetNodeAtPosition(blocksPos[i]));
                     ChangeGameState(GameState.WaitingInput);
                 }
             }
@@ -64,10 +69,7 @@ namespace Prototype.Scripts.Managers
         private void OnApplicationQuit()
         {
             var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
-            foreach (Block block in orderedBlocks)
-            {
-                onQuitManager.GettingGBlocks(orderedBlocks);
-            }
+            onQuitManager.GettingGBlocks(orderedBlocks);
         }
 
         /// <summary>
