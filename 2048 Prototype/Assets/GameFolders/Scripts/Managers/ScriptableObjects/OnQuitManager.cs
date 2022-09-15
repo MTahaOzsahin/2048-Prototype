@@ -13,27 +13,26 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         
         public void GettingGBlocks(List<Block> blocksOnQuit)
         {
-            SaveData saveData = new SaveData();
             allBlocks = new List<Block>();
             allBlocks = blocksOnQuit;
 
-            //foreach (var blocks in allBlocks)
-            //{
-            //    saveData.allBlocksPos.Add(blocks.Pos);
-            //    saveData.allBlocksValue.Add(blocks.value);
-            //}
+            BlocksPositions blocksPositions = new BlocksPositions();
+            BlocksValues blocksValues = new BlocksValues();
+
             for (int i = 0; i < allBlocks.Count; i++)
             {
-                saveData.allBlocksPos[i].Set(allBlocks[i].Pos.x, allBlocks[i].Pos.y);
-                saveData.allBlocksValue[i] = allBlocks[i].value;
+                blocksPositions.allBlocksPos[i].Set(allBlocks[i].Pos.x, allBlocks[i].Pos.y);
+                blocksValues.allBlocksValue[i] = allBlocks[i].value;
             }
            
 
-            string saveDataJson = JsonUtility.ToJson(saveData.allBlocksPos);
+            string savePositionsDataJson = JsonUtility.ToJson(blocksPositions.allBlocksPos);
+            string SaveValueDataJson = JsonUtility.ToJson(blocksValues.allBlocksValue);
 
-            File.WriteAllText(Application.dataPath + "/saveDataJson.json", saveDataJson);
+            File.WriteAllText(Application.dataPath + "/savePositionsDataJson.json", savePositionsDataJson);
+            File.WriteAllText(Application.dataPath + "/saveValuesDataJson.json", SaveValueDataJson);
 
-            
+
         }
 
         public void GivingBlocks(List<Vector2> positions,List<int> values)
@@ -54,11 +53,15 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
                 Debug.Log("There is no json file");
             }
         }
-
         [System.Serializable]
-        public class SaveData
+        public class BlocksPositions
         {
             public Vector2[] allBlocksPos = new Vector2[8];
+        }
+
+        [System.Serializable]
+        public class BlocksValues
+        {
             public int[] allBlocksValue = new int[8];
         }
     }
