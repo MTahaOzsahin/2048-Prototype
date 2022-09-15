@@ -11,7 +11,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         [SerializeField] SoundManager soundManager;
         [SerializeField] ScoreManager scoreManager;
         [SerializeField] GridManager gridManager;
-        [SerializeField] OnQuitManager onQuitManager;
+        [SerializeField] DataManager dataManager;
         public void ExitApplication()
         {
             Application.Quit();
@@ -19,7 +19,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         public void Restart()
         {
             scoreManager.currentScore = 0;
-            onQuitManager.allBlocks.Clear();
+            dataManager.allBlocksBeforeSave.Clear();
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadSceneAsync(currentLevelIndex,LoadSceneMode.Single);
         }

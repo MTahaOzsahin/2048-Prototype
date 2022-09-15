@@ -31,6 +31,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         public void HandleScore(int amoun)
         {
             currentScore += amoun * 2;
+            onBestScoreChangeEvent?.Invoke(bestScore);
             if (currentScore >= bestScore)
             {
                 bestScore = currentScore;

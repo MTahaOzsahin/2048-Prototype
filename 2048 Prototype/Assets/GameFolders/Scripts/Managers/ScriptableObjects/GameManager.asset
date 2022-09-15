@@ -15,4 +15,4 @@ MonoBehaviour:
   soundManager: {fileID: 11400000, guid: 068bd9930346c9f428798ce5eade85a4, type: 2}
   scoreManager: {fileID: 11400000, guid: af4749d6919bce94792e1bff605d396c, type: 2}
   gridManager: {fileID: 11400000, guid: 844043604673e984e80f1c1bd173d7ea, type: 2}
-  onQuitManager: {fileID: 11400000, guid: b60612aa666d7c446a0a8be34d6ed34d, type: 2}
+  dataManager: {fileID: 11400000, guid: b60612aa666d7c446a0a8be34d6ed34d, type: 2}

@@ -10,6 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1aaa6ca2cbb49de4da9b6213e4315963, type: 3}
-  m_Name: OnQuitManager
+  m_Name: DataManager
   m_EditorClassIdentifier: 
-  allBlocks: []
+  scoreManager: {fileID: 11400000, guid: af4749d6919bce94792e1bff605d396c, type: 2}
+  highScore: 292
+  allBlocksBeforeSave: []
+  savedPositions: []
+  savedValues: 

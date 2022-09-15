@@ -23,7 +23,7 @@ namespace Prototype.Scripts.Managers
         [SerializeField]GridManager gridManager;
 
         //To save blocks on quitting game.
-        [SerializeField]OnQuitManager onQuitManager;
+        [SerializeField]DataManager dataManager;
 
         //The values that blocks holds.
         [SerializeField] List<BlockType> types;
@@ -45,20 +45,21 @@ namespace Prototype.Scripts.Managers
        
         private void Start()
         {
-            if (onQuitManager.allBlocks.Count != 0)
+            if (dataManager.allBlocksBeforeSave.Count != 0)
             {
+                List<Block> blocks = new List<Block>();
                 List<Vector2> blocksPos = new List<Vector2>();
                 List<int> blockValues = new List<int>();
-                onQuitManager.GivingBlocks(blocksPos, blockValues);
-
+                blocksPos = dataManager.GivingBlocksPos();
+                blockValues = dataManager.GivingBlockValue();
                 GenerateGrid();
                 round = 1;
                 for (int i = 0; i < blocksPos.Count; i++)
                 {
 
                     SpawnBlockForUtilization(blocksPos[i], blockValues[i], GetNodeAtPosition(blocksPos[i]));
-                    ChangeGameState(GameState.WaitingInput);
                 }
+                ChangeGameState(GameState.WaitingInput);
             }
             else
             {
@@ -68,8 +69,11 @@ namespace Prototype.Scripts.Managers
 
         private void OnApplicationQuit()
         {
-            var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
-            onQuitManager.GettingGBlocks(orderedBlocks);
+            if (blocksList.Count != 0)
+            {
+                var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
+                dataManager.GettingGBlocks(orderedBlocks);
+            }
         }
 
         /// <summary>
