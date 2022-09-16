@@ -19,7 +19,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         public void Restart()
         {
             scoreManager.currentScore = 0;
-            dataManager.allBlocksBeforeSave.Clear();
+            dataManager.allActiveBlockNumber = 0;
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadSceneAsync(currentLevelIndex,LoadSceneMode.Single);
         }

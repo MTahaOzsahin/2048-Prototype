@@ -4,24 +4,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
+///Using only during saving games.
 public class PlayerData
 {
     public float[] xposition;
     public float[] yposition;
     public int[] value;
     public int highScore;
+    public int nodeNumber;
     public PlayerData(DataManager dataManager)
     {
-        xposition = new float[36];
-        yposition = new float[36];
-        value = new int[36];
+        xposition = new float[dataManager.allActiveBlockNumber];
+        yposition = new float[dataManager.allActiveBlockNumber];
+        value = new int[dataManager.allActiveBlockNumber];
         highScore = new int();
         highScore = dataManager.highScore;
-        for (int i = 0; i < dataManager.allBlocksBeforeSave.Count; i++)
+        nodeNumber = new int();
+        nodeNumber = dataManager.nodeNumber;
+        for (int i = 0; i < dataManager.allActiveBlockNumber; i++)
         {
-            value[i] = dataManager.allBlocksBeforeSave[i].value;
-            xposition[i] = dataManager.allBlocksBeforeSave[i].Pos.x;
-            yposition[i] = dataManager.allBlocksBeforeSave[i].Pos.y;
+            value[i] = dataManager.allActiveBlocks[i].value;
+            xposition[i] = dataManager.allActiveBlocks[i].Pos.x;
+            yposition[i] = dataManager.allActiveBlocks[i].Pos.y;
         }
     }
 }

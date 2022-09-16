@@ -1,13 +1,11 @@
 using DG.Tweening;
 using Prototype.Scripts.Grid;
-using Prototype.Scripts.InputActions;
 using Prototype.Scripts.Interfaces;
 using Prototype.Scripts.Managers.ScriptableObjects;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Prototype.Scripts.Managers
 {
@@ -45,34 +43,69 @@ namespace Prototype.Scripts.Managers
        
         private void Start()
         {
-            if (dataManager.allBlocksBeforeSave.Count != 0)
+            if (dataManager.allActiveBlockNumber != 0)
             {
-                List<Block> blocks = new List<Block>();
                 List<Vector2> blocksPos = new List<Vector2>();
                 List<int> blockValues = new List<int>();
                 blocksPos = dataManager.GivingBlocksPos();
                 blockValues = dataManager.GivingBlockValue();
-                GenerateGrid();
-                round = 1;
-                for (int i = 0; i < blocksPos.Count; i++)
+                if (blocksPos.Count == 0)
                 {
-
-                    SpawnBlockForUtilization(blocksPos[i], blockValues[i], GetNodeAtPosition(blocksPos[i]));
+                    ChangeGameState(GameState.GenerateLevel);
                 }
-                ChangeGameState(GameState.WaitingInput);
+                else
+                {
+                    if (dataManager.NodeNumber() == 16)
+                    {
+                        gridManager.gridWidth = 4;
+                        gridManager.gridHeight = 4;
+                    }
+                    else if (dataManager.NodeNumber() == 25)
+                    {
+                        gridManager.gridWidth = 5;
+                        gridManager.gridHeight = 5;
+                    }
+                    else if (dataManager.NodeNumber() == 36)
+                    {
+                        gridManager.gridWidth = 6;
+                        gridManager.gridHeight = 6;
+                    }
+                    GenerateGrid();
+                    round = 1;
+                    for (int i = 0; i < blocksPos.Count; i++)
+                    {
+                        SpawnBlockForUtilization(blocksPos[i], blockValues[i], GetNodeAtPosition(blocksPos[i]));
+                    }
+                    ChangeGameState(GameState.WaitingInput);
+                }
             }
             else
             {
                 ChangeGameState(GameState.GenerateLevel);
             }
         }
-
+        private void OnApplicationPause(bool pause)
+        {
+            if (blocksList.Count != 0)
+            {
+                var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
+                dataManager.GettingGBlocks(orderedBlocks.Count, orderedBlocks, nodesList.Count);
+            }
+            else
+            {
+                // Dont save anything.
+            }
+        }
         private void OnApplicationQuit()
         {
             if (blocksList.Count != 0)
             {
                 var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
-                dataManager.GettingGBlocks(orderedBlocks);
+                dataManager.GettingGBlocks(orderedBlocks.Count, orderedBlocks, nodesList.Count);
+            }
+            else
+            {
+                // Dont save anything.
             }
         }
 

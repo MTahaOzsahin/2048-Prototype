@@ -1,8 +1,9 @@
 Will fix:
 
 
+1.Need to check which grid layout has played when player exit then load to that grid layout.I guess i need to separate start to two way. One for reopening game and the other one for in game start(like new button or grid button.)
 
-3.Scaleable canvases for any phone.
+
 
 
 Fixed:
@@ -11,7 +12,11 @@ Fixed:
 
 2.Undo function.
 
+2.Check application.onQuit is called direct during force stop.(Force stop mean homescreen button).
+
 3.Current score will reset after new scene loaded.
+
+3.Scaleable canvases for any phone.
 
 5.Win conditions will change according to grid layout.
 

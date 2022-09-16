@@ -13,7 +13,13 @@ MonoBehaviour:
   m_Name: DataManager
   m_EditorClassIdentifier: 
   scoreManager: {fileID: 11400000, guid: af4749d6919bce94792e1bff605d396c, type: 2}
-  highScore: 292
-  allBlocksBeforeSave: []
-  savedPositions: []
-  savedValues: 
+  highScore: 752
+  allActiveBlockNumber: 0
+  allActiveBlocks: []
+  savedPositions:
+  - {x: 2, y: 1}
+  - {x: 2, y: 2}
+  - {x: 3, y: 0}
+  - {x: 3, y: 2}
+  - {x: 3, y: 3}
+  savedValues: 0200000002000000020000000400000020000000

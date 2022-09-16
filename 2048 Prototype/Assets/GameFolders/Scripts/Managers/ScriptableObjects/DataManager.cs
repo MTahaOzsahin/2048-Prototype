@@ -13,19 +13,30 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
 
         [HideInInspector]
         public int highScore;
+        
+        //Number of active blocks on the grid when this field called.
+        public int allActiveBlockNumber = 0;
 
-        //Ordered blocks that on the grid list when we get at closing game.
-        public List<Block> allBlocksBeforeSave;
+        //List of active blocks and nodes on the grid when this field called.
+        public List<Block> allActiveBlocks = new List<Block>();
+        public int nodeNumber;
 
         //List to GameplayManager to recreate same grid.
         public List<Vector2> savedPositions;
         public List<int> savedValues;
-        
-        public void GettingGBlocks(List<Block> blocksOnQuit)
+
+        private void OnEnable()
+        {
+            allActiveBlockNumber = 1; //We making this 1 for first time opening. After that this field changing according to game.
+            nodeNumber = 16; //same.
+        }
+        public void GettingGBlocks(int activeBlocksOnQuit, List<Block> blocksOnQuit,int gridNodeNumber)
         {
             highScore = scoreManager.bestScore;
-            allBlocksBeforeSave = new List<Block>();
-            allBlocksBeforeSave = blocksOnQuit;
+            allActiveBlockNumber = activeBlocksOnQuit;
+            allActiveBlocks = new List<Block>();
+            allActiveBlocks = blocksOnQuit;
+            nodeNumber = gridNodeNumber;
             SaveGame();
         }
 
@@ -39,6 +50,11 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
             LoadGame();
             return savedValues;
         }
+        public int NodeNumber()
+        {
+            LoadGame();
+            return nodeNumber;
+        }
 
 
         public void SaveGame()
@@ -50,8 +66,10 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
             savedPositions = new List<Vector2>();
             savedValues = new List<int>();
             PlayerData data = SaveSystem.LoadGame();
+            if (data == null) return;
             scoreManager.bestScore = data.highScore;
-            for (int i = 0; i < allBlocksBeforeSave.Count; i++)
+            nodeNumber = data.nodeNumber;
+            for (int i = 0; i < data.value.Length; i++)
             {
                 Vector2 vector2 = new Vector2();
                 vector2.x = data.xposition[i];
