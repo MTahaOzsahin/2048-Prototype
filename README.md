@@ -3,6 +3,8 @@
 
 Addition to base game Grid Selection added.
 
+Undo Function.
+
 Support WASD / Arrow keys and swipe gestures. Build taken and shared.
 
 Demo: 
