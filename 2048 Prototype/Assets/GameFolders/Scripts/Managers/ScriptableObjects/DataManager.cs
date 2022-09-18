@@ -27,7 +27,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
 
         private void OnEnable()
         {
-            allActiveBlockNumber = 1; //We making this 1 for first time opening. After that this field changing according to game.
+            allActiveBlockNumber = 1; //We making this 1 for first time opening. After that this field will change according to game.
             nodeNumber = 16; //same.
         }
         public void GettingGBlocks(int activeBlocksOnQuit, List<Block> blocksOnQuit,int gridNodeNumber)
@@ -43,11 +43,19 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         public List<Vector2> GivingBlocksPos()
         {
             LoadGame();
+            if (savedPositions.Count == 0)
+            {
+                return null;
+            }
             return savedPositions;
         }
         public List<int> GivingBlockValue()
         {
             LoadGame();
+            if (savedValues.Count == 0)
+            {
+                return null;
+            }
             return savedValues;
         }
         public int NodeNumber()

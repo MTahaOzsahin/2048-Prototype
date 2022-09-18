@@ -2,6 +2,7 @@ using DG.Tweening;
 using Prototype.Scripts.Grid;
 using Prototype.Scripts.Interfaces;
 using Prototype.Scripts.Managers.ScriptableObjects;
+using Prototype.Scripts.Singelton;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,41 +44,35 @@ namespace Prototype.Scripts.Managers
        
         private void Start()
         {
-            if (dataManager.allActiveBlockNumber != 0)
+            if (dataManager.GivingBlocksPos() != null)
             {
                 List<Vector2> blocksPos = new List<Vector2>();
                 List<int> blockValues = new List<int>();
                 blocksPos = dataManager.GivingBlocksPos();
                 blockValues = dataManager.GivingBlockValue();
-                if (blocksPos.Count == 0)
+
+                if (dataManager.NodeNumber() == 16)
                 {
-                    ChangeGameState(GameState.GenerateLevel);
+                    gridManager.gridWidth = 4;
+                    gridManager.gridHeight = 4;
                 }
-                else
+                else if (dataManager.NodeNumber() == 25)
                 {
-                    if (dataManager.NodeNumber() == 16)
-                    {
-                        gridManager.gridWidth = 4;
-                        gridManager.gridHeight = 4;
-                    }
-                    else if (dataManager.NodeNumber() == 25)
-                    {
-                        gridManager.gridWidth = 5;
-                        gridManager.gridHeight = 5;
-                    }
-                    else if (dataManager.NodeNumber() == 36)
-                    {
-                        gridManager.gridWidth = 6;
-                        gridManager.gridHeight = 6;
-                    }
-                    GenerateGrid();
-                    round = 1;
-                    for (int i = 0; i < blocksPos.Count; i++)
-                    {
-                        SpawnBlockForUtilization(blocksPos[i], blockValues[i], GetNodeAtPosition(blocksPos[i]));
-                    }
-                    ChangeGameState(GameState.WaitingInput);
+                    gridManager.gridWidth = 5;
+                    gridManager.gridHeight = 5;
                 }
+                else if (dataManager.NodeNumber() == 36)
+                {
+                    gridManager.gridWidth = 6;
+                    gridManager.gridHeight = 6;
+                }
+                GenerateGrid();
+                round = 1;
+                for (int i = 0; i < blocksPos.Count; i++)
+                {
+                    SpawnBlockForUtilization(blocksPos[i], blockValues[i], GetNodeAtPosition(blocksPos[i]));
+                }
+                ChangeGameState(GameState.WaitingInput);
             }
             else
             {
@@ -189,7 +184,7 @@ namespace Prototype.Scripts.Managers
             board.size = new Vector2(gridManager.gridWidth, gridManager.gridHeight);
 
             Camera.main.transform.position = new Vector3(center.x, center.y + 1.5f, -10); // +1.5f to y-axis for better looking
-            Camera.main.orthographicSize = gridManager.gridWidth;
+            Camera.main.orthographicSize = gridManager.gridWidth + 1;
         }
 
         /// <summary>
@@ -415,7 +410,6 @@ namespace Prototype.Scripts.Managers
             blocksList.Remove(block);
             Destroy(block.gameObject);
         }
-
         /// <summary>
         /// Getting node at given position.
         /// </summary>

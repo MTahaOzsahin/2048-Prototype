@@ -20,14 +20,16 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         {
             scoreManager.currentScore = 0;
             dataManager.allActiveBlockNumber = 0;
+            SaveSystem.DeleteSaveGame();
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-            SceneManager.LoadSceneAsync(currentLevelIndex,LoadSceneMode.Single);
+            SceneManager.LoadSceneAsync(currentLevelIndex, LoadSceneMode.Single);
         }
         public void SetGridLevel(int x)
         {
             scoreManager.currentScore = 0;
+            gridManager.GridSelecter(x, x);
+            SaveSystem.DeleteSaveGame();
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
-            gridManager.GridSelecter(x,x);
             SceneManager.LoadSceneAsync(currentLevelIndex, LoadSceneMode.Single);
         }
     }

@@ -41,6 +41,20 @@ public static class SaveSystem
             return null;
         }
     }
-
+    /// <summary>
+    /// Deleting saved game datas.
+    /// </summary>
+    public static void DeleteSaveGame()
+    {
+        string filePath = Application.persistentDataPath + "/save.data";
+        try
+        {
+            File.Delete(filePath);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogException(ex);
+        }
+    }
     
 }

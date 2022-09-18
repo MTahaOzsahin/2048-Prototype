@@ -1,7 +1,6 @@
 Will fix:
 
 
-1.Need to check which grid layout has played when player exit then load to that grid layout.I guess i need to separate start to two way. One for reopening game and the other one for in game start(like new button or grid button.)
 
 
 
@@ -9,6 +8,9 @@ Will fix:
 Fixed:
 
 1. Will check if there any mergicable block before decided to lose game.
+
+1.Need to check which grid layout has played when player exit then load to that grid layout.I guess i need to separate start to two way. One for reopening game and the other one for in game start(like new button or grid button.)
+
 
 2.Undo function.
 
