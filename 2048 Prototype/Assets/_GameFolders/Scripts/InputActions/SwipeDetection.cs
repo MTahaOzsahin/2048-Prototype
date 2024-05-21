@@ -1,11 +1,11 @@
-using Prototype.Scripts.Singelton;
+using Prototype.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Prototype.Scripts.InputActions
 {
-    public class SwipeDetection : MonoBehaviourSingleton<SwipeDetection>
+    public class SwipeDetection : SingletonMB<SwipeDetection>
     {
         /* This script made to detect is swipe started and which direction to swipe.
          */

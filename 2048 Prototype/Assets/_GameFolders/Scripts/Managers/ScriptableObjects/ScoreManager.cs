@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,6 +6,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
     [CreateAssetMenu(menuName = "Managers/ScoreManager")]
     public class ScoreManager : ScriptableObject
     {
+        public int previousScore;
         public int currentScore;
         public int bestScore;
 
@@ -30,6 +29,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         }
         public void HandleScore(int amoun)
         {
+            previousScore = currentScore;
             currentScore += amoun * 2;
             onBestScoreChangeEvent?.Invoke(bestScore);
             if (currentScore >= bestScore)
@@ -37,6 +37,11 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
                 bestScore = currentScore;
                 onBestScoreChangeEvent?.Invoke(bestScore);
             }
+            onScoreChangeEvent?.Invoke(currentScore);
+        }
+
+        public void CallScoreChangeEvent()
+        {
             onScoreChangeEvent?.Invoke(currentScore);
         }
     }

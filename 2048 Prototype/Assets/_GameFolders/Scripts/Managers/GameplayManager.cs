@@ -2,7 +2,6 @@ using DG.Tweening;
 using Prototype.Scripts.Grid;
 using Prototype.Scripts.Interfaces;
 using Prototype.Scripts.Managers.ScriptableObjects;
-using Prototype.Scripts.Singelton;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -433,6 +432,10 @@ namespace Prototype.Scripts.Managers
             {
                 SpawnBlockForUtilization(occupiedNodesPos[i], occupiedNodesValue[i], GetNodeAtPosition(occupiedNodesPos[i]));
             }
+
+            scoreManager.currentScore = scoreManager.previousScore;
+            scoreManager.CallScoreChangeEvent();
+            
 
             yield return null; 
         }

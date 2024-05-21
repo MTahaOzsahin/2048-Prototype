@@ -32,5 +32,10 @@ namespace Prototype.Scripts.Managers
         {
             currentScoreText.text = currentScore.ToString();
         }
+
+        public void ChangeCurrentScore(int targerScore)
+        {
+            currentScoreText.text = targerScore.ToString();
+        }
     }
 }

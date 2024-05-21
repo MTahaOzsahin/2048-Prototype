@@ -15,6 +15,7 @@ namespace Prototype.Scripts.Grid
         public Vector2 Pos => transform.position;
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private TextMeshPro text;
+
         public void Init(BlockType type)
         {
             value = type.value;
