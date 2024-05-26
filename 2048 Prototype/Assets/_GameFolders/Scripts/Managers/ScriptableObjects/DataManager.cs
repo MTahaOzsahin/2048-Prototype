@@ -6,13 +6,16 @@ using UnityEngine;
 
 namespace Prototype.Scripts.Managers.ScriptableObjects
 {
-    [CreateAssetMenu(menuName ="Managers/DataMAnager")]
+    [CreateAssetMenu(menuName ="Managers/DataManager")]
     public class DataManager : ScriptableObject
     {
         public ScoreManager scoreManager;
 
         [HideInInspector]
         public int highScore;
+
+        [HideInInspector]
+        public int currentScore;
         
         //Number of active blocks on the grid when this field called.
         public int allActiveBlockNumber = 0;
@@ -33,6 +36,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         public void GettingGBlocks(int activeBlocksOnQuit, List<Block> blocksOnQuit,int gridNodeNumber)
         {
             highScore = scoreManager.bestScore;
+            currentScore = scoreManager.currentScore;
             allActiveBlockNumber = activeBlocksOnQuit;
             allActiveBlocks = new List<Block>();
             allActiveBlocks = blocksOnQuit;
@@ -76,6 +80,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
             PlayerData data = SaveSystem.LoadGame();
             if (data == null) return;
             scoreManager.bestScore = data.highScore;
+            scoreManager.currentScore = data.currentScore;
             nodeNumber = data.nodeNumber;
             for (int i = 0; i < data.value.Length; i++)
             {

@@ -11,6 +11,7 @@ public class PlayerData
     public float[] yposition;
     public int[] value;
     public int highScore;
+    public int currentScore;
     public int nodeNumber;
     public PlayerData(DataManager dataManager)
     {
@@ -19,6 +20,8 @@ public class PlayerData
         value = new int[dataManager.allActiveBlockNumber];
         highScore = new int();
         highScore = dataManager.highScore;
+        currentScore = new int();
+        currentScore = dataManager.currentScore;
         nodeNumber = new int();
         nodeNumber = dataManager.nodeNumber;
         for (int i = 0; i < dataManager.allActiveBlockNumber; i++)
