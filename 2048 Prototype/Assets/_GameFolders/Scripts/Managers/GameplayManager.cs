@@ -297,7 +297,7 @@ namespace Prototype.Scripts.Managers
             {
                 var movePoint = block.mergingBlock != null ? block.mergingBlock.node.Pos : block.node.Pos;
 
-                sequence.Insert(0, block.transform.DOMove(movePoint, gridManager.travelTime).SetEase(Ease.InQuad));
+                sequence.Insert(0, block.transform.DOMove(movePoint, gridManager.travelTime).SetEase(Ease.Linear));
             }
 
             sequence.OnComplete(() =>
@@ -443,6 +443,21 @@ namespace Prototype.Scripts.Managers
         {
             if (round == 1) return;
             StartCoroutine(UndoFunctionCoroutine());
+        }
+
+        public void MuteUnMute()
+        {
+            var mAudioSource = gameObject.GetComponent<AudioSource>() != null ?
+             this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>();
+
+             if (Mathf.Approximately(0f, mAudioSource.volume)) 
+             {
+                 mAudioSource.volume = 0.3f;
+             }
+             else 
+             {
+                 mAudioSource.volume = 0f;
+             }
         }
     }
 

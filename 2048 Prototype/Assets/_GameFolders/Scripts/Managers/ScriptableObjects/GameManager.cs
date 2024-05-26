@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,10 +10,12 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         [SerializeField] ScoreManager scoreManager;
         [SerializeField] GridManager gridManager;
         [SerializeField] DataManager dataManager;
+
         public void ExitApplication()
         {
             Application.Quit();
         }
+
         public void Restart()
         {
             scoreManager.currentScore = 0;
@@ -24,6 +24,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadSceneAsync(currentLevelIndex, LoadSceneMode.Single);
         }
+
         public void SetGridLevel(int x)
         {
             scoreManager.currentScore = 0;
