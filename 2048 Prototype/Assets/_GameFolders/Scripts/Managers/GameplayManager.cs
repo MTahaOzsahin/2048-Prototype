@@ -34,8 +34,8 @@ namespace Prototype.Scripts.Managers
         List<int> occupiedNodesValue;
 
         //GameStates.
-        GameState state;
-        int round;
+        private GameState state;
+        private int round;
 
         //Getting  blocks value.
         BlockType GetBlockTypeByValue(int value) => types.First(t => t.value == value);
@@ -45,10 +45,8 @@ namespace Prototype.Scripts.Managers
         {
             if (dataManager.GivingBlocksPos() != null)
             {
-                List<Vector2> blocksPos = new List<Vector2>();
-                List<int> blockValues = new List<int>();
-                blocksPos = dataManager.GivingBlocksPos();
-                blockValues = dataManager.GivingBlockValue();
+                var blocksPos = dataManager.GivingBlocksPos();
+                var blockValues = dataManager.GivingBlockValue();
 
                 if (dataManager.NodeNumber() == 16)
                 {
@@ -80,34 +78,22 @@ namespace Prototype.Scripts.Managers
         }
         private void OnApplicationPause(bool pause)
         {
-            if (blocksList.Count != 0)
-            {
-                var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
-                dataManager.GettingGBlocks(orderedBlocks.Count, orderedBlocks, nodesList.Count);
-            }
-            else
-            {
-                // Dont save anything.
-            }
+            if (blocksList == null || blocksList.Count == 0) return;
+            var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
+            dataManager.GettingGBlocks(orderedBlocks.Count, orderedBlocks, nodesList.Count);
         }
         private void OnApplicationQuit()
         {
-            if (blocksList.Count != 0)
-            {
-                var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
-                dataManager.GettingGBlocks(orderedBlocks.Count, orderedBlocks, nodesList.Count);
-            }
-            else
-            {
-                // Dont save anything.
-            }
+            if (blocksList == null || blocksList.Count == 0) return;
+            var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList();
+            dataManager.GettingGBlocks(orderedBlocks.Count, orderedBlocks, nodesList.Count);
         }
 
         /// <summary>
         /// Changing game states.
         /// </summary>
         /// <param name="newState"></param>
-        void ChangeGameState(GameState newState)
+        private void ChangeGameState(GameState newState)
         {
             state = newState;
 
@@ -119,7 +105,6 @@ namespace Prototype.Scripts.Managers
                     SpawnBlocks(round++ == 0 ? 2 : 1);
                     break;
                 case GameState.SpawningBlocks:
-
                     SpawnBlocks(round++ == 0 ? 2 : 1);
                     break;
                 case GameState.WaitingInput:
@@ -131,16 +116,14 @@ namespace Prototype.Scripts.Managers
                     GameObject winPanel = Instantiate(gridManager.winPanel, FindObjectOfType<UiScoreManager>().gameObject.transform.position,
                         Quaternion.identity, FindObjectOfType<UiScoreManager>().gameObject.transform);
                     winPanel.SetActive(true);
-                    soundManager.WinSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
+                    soundManager.WinSound(gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
                 case GameState.Lose:
                     Time.timeScale = 0;
                     GameObject losePanel = Instantiate(gridManager.losePanel, FindObjectOfType<UiScoreManager>().gameObject.transform.position,
                         Quaternion.identity, FindObjectOfType<UiScoreManager>().gameObject.transform);
                     losePanel.SetActive(true);
-                    soundManager.LoseSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
-                    break;
-                default:
+                    soundManager.LoseSound(gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
             }
         }
@@ -148,7 +131,7 @@ namespace Prototype.Scripts.Managers
         /// <summary>
         /// Generating base grid.
         /// </summary>
-        void GenerateGrid()
+        private void GenerateGrid()
         {
             round = 0;
             nodesList = new List<Node>();
