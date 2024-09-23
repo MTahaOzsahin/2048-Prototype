@@ -1,6 +1,4 @@
-using Prototype.Scripts;
-using System.Collections;
-using System.Collections.Generic;
+using Prototype.Scripts.Managers;
 using UnityEngine;
 
 namespace Prototype.Scripts.InputActions
@@ -17,11 +15,12 @@ namespace Prototype.Scripts.InputActions
         [SerializeField] float maximumTime = 1f;
         //How close match direction and standard vectors must be. Higher value means sharper swipe.
         [SerializeField, Range(0f, 1f)] float directionThreshold = 0.5f;
+        [SerializeField] private GameplayManager gameplayManager;
 
-        Vector2 startPosition;
-        float startTime;
-        Vector2 endPosition;
-        float endTime;
+        private Vector2 startPosition;
+        private float startTime;
+        private Vector2 endPosition;
+        private float endTime;
 
         public event System.Action<Vector2> OnUpSwipe;
         public event System.Action<Vector2> OnDownSwipe;
@@ -45,11 +44,13 @@ namespace Prototype.Scripts.InputActions
         }
         void SwipeStart(Vector2 position, float time)
         {
+            if (gameplayManager.GetCurrentGameState() == GameState.OnPause) return;
             startPosition = position;
             startTime = time;
         }
         void SwipeEnd(Vector2 position, float time)
         {
+            if (gameplayManager.GetCurrentGameState() == GameState.OnPause) return;
             endPosition = position;
             endTime = time;
             DetectSwipe();

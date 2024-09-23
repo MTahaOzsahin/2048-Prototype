@@ -36,6 +36,7 @@ namespace Prototype.Scripts.Managers
         //GameStates.
         private GameState state;
         private int round;
+        private GameState previousState;
 
         //Getting  blocks value.
         BlockType GetBlockTypeByValue(int value) => types.First(t => t.value == value);
@@ -89,12 +90,18 @@ namespace Prototype.Scripts.Managers
             dataManager.GettingGBlocks(orderedBlocks.Count, orderedBlocks, nodesList.Count);
         }
 
+        public GameState GetCurrentGameState()
+        {
+            return state;
+        }
+
         /// <summary>
         /// Changing game states.
         /// </summary>
         /// <param name="newState"></param>
         private void ChangeGameState(GameState newState)
         {
+            if (state != GameState.OnPause) previousState = state;
             state = newState;
 
             switch (newState)
@@ -125,7 +132,20 @@ namespace Prototype.Scripts.Managers
                     losePanel.SetActive(true);
                     soundManager.LoseSound(gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
+                case GameState.OnPause:
+                    //
+                    break;
             }
+        }
+
+        public void OnPanelOpen()
+        {
+            ChangeGameState(GameState.OnPause);
+        }
+
+        public void OnPanelClose()
+        {
+            ChangeGameState(previousState);
         }
 
         /// <summary>
@@ -175,21 +195,17 @@ namespace Prototype.Scripts.Managers
         /// <param name="amount"></param>
         void SpawnBlocks(int amount)
         {
-
             var freeNodes = nodesList.Where(n => n.occupiedBlock == null).OrderBy(b => Random.value).ToList();
-
             foreach (var node in freeNodes.Take(amount))
             {
                 SpawnBlock(node, Random.value > 0.8f ? 4 : 2);
 
             }
-
             if (freeNodes.Count() == 1)
             {
                 CheckLoseGame();
                 return;
             }
-
             ChangeGameState(blocksList.Any(b => b.value == gridManager.winCondition) ? GameState.Win : GameState.WaitingInput);
         }
 
@@ -237,8 +253,7 @@ namespace Prototype.Scripts.Managers
                 occupiedNodesPos.Add(node.Pos);
                 occupiedNodesValue.Add(node.occupiedBlock.value);
             }
-
-
+            
             soundManager.MoveSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
             var orderedBlocks = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); //Before shifting blocks list.
             List<Vector2> orderedBlockPositionsBeforeShift = new List<Vector2>();
@@ -280,7 +295,7 @@ namespace Prototype.Scripts.Managers
             {
                 var movePoint = block.mergingBlock != null ? block.mergingBlock.node.Pos : block.node.Pos;
 
-                sequence.Insert(0, block.transform.DOMove(movePoint, gridManager.travelTime).SetEase(Ease.Linear));
+                sequence.Insert(0, block.transform.DOMove(movePoint, gridManager.travelTime).SetEase(Ease.InElastic));
             }
 
             sequence.OnComplete(() =>
@@ -290,15 +305,13 @@ namespace Prototype.Scripts.Managers
                 {
                     MergeBlocks(block.mergingBlock, block);
                     scoreManager.HandleScore(block.value);
-                    if (block.value > 63)
-                    {
+                    if (block.value > 63) 
                         soundManager.NiceScoreSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
-                    }
                     else
-                    soundManager.MergingSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
+                        soundManager.MergingSound(this.gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                 }
 
-                ///This section is here to prevent spawning block if there is not shift via compare before blocks list and after block list.
+                //This section is here to prevent spawning block if there is not shift via compare before blocks list and after block list.
                 afterShiftBlocks.Clear();
                 var orderedBlockAfterShift = blocksList.OrderBy(b => b.Pos.x).ThenBy(b => b.Pos.y).ToList(); // After shifting block list.
                 List<Vector2> orderedBlockPositionsAfterShift = new List<Vector2>();
@@ -455,6 +468,7 @@ namespace Prototype.Scripts.Managers
         Shifting,
         Win,
         Lose,
+        OnPause
     }
     /// <summary>
     /// Blocks types which hold their values and colors.
