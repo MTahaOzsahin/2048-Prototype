@@ -28,7 +28,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         public void SetGridLevel(int x)
         {
             scoreManager.currentScore = 0;
-            gridManager.GridSelecter(x, x);
+            gridManager.GridSelector(x, x);
             SaveSystem.DeleteSaveGame();
             int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
             SceneManager.LoadSceneAsync(currentLevelIndex, LoadSceneMode.Single);

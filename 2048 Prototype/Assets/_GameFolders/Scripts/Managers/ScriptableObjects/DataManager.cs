@@ -1,7 +1,5 @@
 using Prototype.Scripts.Grid;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace Prototype.Scripts.Managers.ScriptableObjects
@@ -21,7 +19,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         public int allActiveBlockNumber = 0;
 
         //List of active blocks and nodes on the grid when this field called.
-        public List<Block> allActiveBlocks = new List<Block>();
+        public List<Block> allActiveBlocks = new();
         public int nodeNumber;
 
         //List to GameplayManager to recreate same grid.
@@ -69,32 +67,31 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         }
 
 
-        public void SaveGame()
+        private void SaveGame()
         {
             SaveSystem.SaveGame(this);
         }
-        public void LoadGame()
+
+        private void LoadGame()
         {
             savedPositions = new List<Vector2>();
             savedValues = new List<int>();
-            PlayerData data = SaveSystem.LoadGame();
+            var data = SaveSystem.LoadGame();
             if (data == null) return;
             scoreManager.bestScore = data.highScore;
             scoreManager.currentScore = data.currentScore;
             nodeNumber = data.nodeNumber;
             for (int i = 0; i < data.value.Length; i++)
             {
-                Vector2 vector2 = new Vector2();
-                vector2.x = data.xposition[i];
-                vector2.y = data.yposition[i];
+                var vector2 = new Vector2
+                {
+                    x = data.xposition[i],
+                    y = data.yposition[i]
+                };
                 savedPositions.Add(vector2);
-                int value = new int();
-                value = data.value[i];
+                var value = data.value[i];
                 savedValues.Add(value);
             }
         }
-
-
-        
     }
 }

@@ -74,10 +74,7 @@ namespace Prototype.Scripts.InputActions
              * returns 0 if perpendicular to each other
              * returns -1 if opposite direction
              */
-
-            float vector2DotUp = Vector2.Dot(Vector2.up, direction);
-            float vector2DotRight = Vector2.Dot(Vector2.right, direction);
-
+            
             if (Vector2.Dot(Vector2.up, direction) > directionThreshold)
             {
                 OnUpSwipe?.Invoke(Vector2.up);

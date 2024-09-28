@@ -17,10 +17,10 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         //Block prefab. Will select manually on unity inspector.
         public Block blockPrefab;
 
-        //Board prefabs's spriteRenderer for instantiate.
+        //Board prefabs spriteRenderer for instantiate.
         public SpriteRenderer boardPrefab;
 
-        //Shifting anim time.Recomended time is 0.2.
+        //Shifting anim time. Default time is 0.2.
         [Range(0f, 1f)]
         public float travelTime = 0.2f;
 
@@ -41,7 +41,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         }
 
         //Changing grid layout from ui grid button.
-        public void GridSelecter(int width, int height)
+        public void GridSelector(int width, int height)
         {
             gridWidth = width;
             gridHeight = height;
@@ -60,7 +60,7 @@ namespace Prototype.Scripts.Managers.ScriptableObjects
         }
 
         //Only for if player want to keep playing after winning the game. Used in ui keep going button.
-        public void WinConditionDiseabler()
+        public void WinConditionDisabler()
         {
             winCondition = 99999;
         }

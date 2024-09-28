@@ -17,7 +17,7 @@ MonoBehaviour:
   nodePrefab: {fileID: 5969399119845887537, guid: c128706ea1e005d4fb46b881370519de, type: 3}
   blockPrefab: {fileID: 1850130647606655852, guid: 19076d7a50cb0334a94d381167a39d6c, type: 3}
   boardPrefab: {fileID: 5105290399748448890, guid: 321682bb7581ee2448e1af6791bb856a, type: 3}
-  travelTime: 0.15
+  travelTime: 0.2
   winCondition: 1024
   winPanel: {fileID: 7695694240866816759, guid: 74e811058ffa81c4a8e3583ade283986, type: 3}
   losePanel: {fileID: 5090516239933432956, guid: c4178efeb12c8cf45aa305cbb8ac56dd, type: 3}

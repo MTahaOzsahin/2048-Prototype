@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Prototype.Scripts.Managers
 {
@@ -41,7 +42,14 @@ namespace Prototype.Scripts.Managers
         //Getting  blocks value.
         BlockType GetBlockTypeByValue(int value) => types.First(t => t.value == value);
 
-       
+        private void Awake()
+        {
+            DOTween.Init(true, false, LogBehaviour.Default);
+            DOTween.useSmoothDeltaTime = true;
+            Application.targetFrameRate = 60;
+        }
+
+
         private void Start()
         {
             if (dataManager.GivingBlocksPos() != null)
@@ -193,7 +201,7 @@ namespace Prototype.Scripts.Managers
         /// Spawning blocks generally.
         /// </summary>
         /// <param name="amount"></param>
-        void SpawnBlocks(int amount)
+        private void SpawnBlocks(int amount)
         {
             var freeNodes = nodesList.Where(n => n.occupiedBlock == null).OrderBy(b => Random.value).ToList();
             foreach (var node in freeNodes.Take(amount))
@@ -216,7 +224,7 @@ namespace Prototype.Scripts.Managers
         /// </summary>
         /// <param name="node"></param>
         /// <param name="value"></param>
-        void SpawnBlock(Node node, int value)
+        private void SpawnBlock(Node node, int value)
         {
             var block = Instantiate(gridManager.blockPrefab, node.Pos, Quaternion.identity);
             block.Init(GetBlockTypeByValue(value));
@@ -295,9 +303,9 @@ namespace Prototype.Scripts.Managers
             {
                 var movePoint = block.mergingBlock != null ? block.mergingBlock.node.Pos : block.node.Pos;
 
-                sequence.Insert(0, block.transform.DOMove(movePoint, gridManager.travelTime).SetEase(Ease.InElastic));
+                sequence.Insert(0, block.transform.DOMove(movePoint, gridManager.travelTime).SetEase(Ease.Flash));
             }
-
+            sequence.Play();
             sequence.OnComplete(() =>
             {
                 var mergeBlocks = orderedBlocks.Where(b => b.mergingBlock != null).ToList();
@@ -324,6 +332,7 @@ namespace Prototype.Scripts.Managers
                 {
                     ChangeGameState(GameState.SpawningBlocks);
                 }
+                sequence.Kill();
             });
         }
 
@@ -443,17 +452,9 @@ namespace Prototype.Scripts.Managers
 
         public void MuteUnMute()
         {
-            var mAudioSource = gameObject.GetComponent<AudioSource>() != null ?
-             this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>();
-
-             if (Mathf.Approximately(0f, mAudioSource.volume)) 
-             {
-                 mAudioSource.volume = 0.3f;
-             }
-             else 
-             {
-                 mAudioSource.volume = 0f;
-             }
+            var mAudioSource = gameObject.GetComponent<AudioSource>() != null ? 
+                gameObject.GetComponent<AudioSource>() : gameObject.AddComponent<AudioSource>();
+            mAudioSource.volume = Mathf.Approximately(0f, mAudioSource.volume) ? 0.3f : 0f;
         }
     }
 
