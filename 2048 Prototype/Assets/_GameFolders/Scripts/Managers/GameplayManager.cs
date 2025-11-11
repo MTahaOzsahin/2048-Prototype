@@ -128,15 +128,15 @@ namespace Prototype.Scripts.Managers
                     break;
                 case GameState.Win:
                     Time.timeScale = 0;
-                    GameObject winPanel = Instantiate(gridManager.winPanel, FindObjectOfType<UiScoreManager>().gameObject.transform.position,
-                        Quaternion.identity, FindObjectOfType<UiScoreManager>().gameObject.transform);
+                    GameObject winPanel = Instantiate(gridManager.winPanel, FindFirstObjectByType<UiScoreManager>().gameObject.transform.position,
+                        Quaternion.identity, FindFirstObjectByType<UiScoreManager>().gameObject.transform);
                     winPanel.SetActive(true);
                     soundManager.WinSound(gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;
                 case GameState.Lose:
                     Time.timeScale = 0;
-                    GameObject losePanel = Instantiate(gridManager.losePanel, FindObjectOfType<UiScoreManager>().gameObject.transform.position,
-                        Quaternion.identity, FindObjectOfType<UiScoreManager>().gameObject.transform);
+                    GameObject losePanel = Instantiate(gridManager.losePanel, FindFirstObjectByType<UiScoreManager>().gameObject.transform.position,
+                        Quaternion.identity, FindFirstObjectByType<UiScoreManager>().gameObject.transform);
                     losePanel.SetActive(true);
                     soundManager.LoseSound(gameObject.GetComponent<AudioSource>() != null ? this.gameObject.GetComponent<AudioSource>() : this.gameObject.AddComponent<AudioSource>());
                     break;

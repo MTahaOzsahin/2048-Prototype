@@ -18,9 +18,9 @@ public class SingletonMB<T> : MonoBehaviour where T : MonoBehaviour
                 {
                     if (instance == null)
                     {
-                        instance = (T)FindObjectOfType(typeof(T));
+                        instance = (T)FindFirstObjectByType(typeof(T));
 
-                        if (FindObjectsOfType(typeof(T)).Length > 1)
+                        if (FindObjectsByType(typeof(T),FindObjectsSortMode.None).Length > 1)
                         {
                             return instance;
                         }

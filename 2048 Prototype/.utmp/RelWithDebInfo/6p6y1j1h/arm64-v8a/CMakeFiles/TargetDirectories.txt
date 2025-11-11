@@ -1,0 +1,5 @@
+C:/Users/TAHA/Documents/UnityProjects/2048-Prototype/2048 Prototype/.utmp/RelWithDebInfo/6p6y1j1h/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/TAHA/Documents/UnityProjects/2048-Prototype/2048 Prototype/.utmp/RelWithDebInfo/6p6y1j1h/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/TAHA/Documents/UnityProjects/2048-Prototype/2048 Prototype/.utmp/RelWithDebInfo/6p6y1j1h/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/TAHA/Documents/UnityProjects/2048-Prototype/2048 Prototype/.utmp/RelWithDebInfo/6p6y1j1h/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/TAHA/Documents/UnityProjects/2048-Prototype/2048 Prototype/.utmp/RelWithDebInfo/6p6y1j1h/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir
